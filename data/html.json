@@ -84,12 +84,6 @@
           "correct": false
         }
       ]
-    },
-    {
-      "question": "Ógild spurning, ætti ég að birast?",
-      "answers": {
-        "foo": "bar"
-      }
     }
   ]
 }

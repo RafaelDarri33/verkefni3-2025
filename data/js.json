@@ -63,7 +63,8 @@
           "correct": false
         },
         {
-          "title": "Ógilt svar"
+          "answer": "Ógilt svar",
+          "correct": false
         }
       ]
     }

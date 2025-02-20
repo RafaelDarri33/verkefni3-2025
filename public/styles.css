@@ -1,74 +1,175 @@
-:root {
-  --font-base-size: 16px;
-  --font-base-family: system-ui, helvetica, arial, sans-serif;
-  --max-inline-size: 50rem;
-  --spacing: 1rem;
-
-  --color-correct: #bffbbf;
-  --color-incorrect: #fdbcb5;
-}
-
-html {
-  box-sizing: border-box;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: inherit;
-  margin: 0;
-  padding: 0;
-}
-
+/* Almennar stillingar */
 body {
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  background: linear-gradient(135deg, #d1e3ff, #f3e7ff);
+  padding: 20px;
+  margin: 0;
+  color: #333;
+}
+
+/* Titill */
+h1 {
+  color: #4a2ebd;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+/* Flokkaval */
+#category-container {
+  margin: 20px 0;
+}
+
+.category-btn {
+  padding: 12px 24px;
+  margin: 5px;
+  cursor: pointer;
+  border: none;
+  border-radius: 25px;
+  font-size: 18px;
+  font-weight: 500;
+  background-color: #5a3fc9; /* Betri kontrast */
+  color: white;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.category-btn:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.category-btn.active {
+  border: 3px solid black;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Spurningakerfi */
+#quiz-container {
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 15px;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(15px);
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Spurningar */
+#question-container {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #264653;
+}
+
+/* Svarmöguleikar */
+#answer-buttons {
   display: flex;
-  min-block-size: 100vh;
-  font-family: var(--font-base-family);
-  font-size: var(--font-base-size);
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
 }
 
-main {
-  display: grid;
-  align-content: flex-start;
-  grid-gap: calc(var(--spacing));
-  margin-inline: auto;
-  padding: var(--spacing);
-  inline-size: 100%;
-  max-inline-size: var(--max-inline-size);
+.btn {
+  width: 80%;
+  padding: 12px;
+  font-size: 18px;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1);
 }
 
-h1,
-h2,
-p {
-  margin-block-end: var(--spacing);
+.btn:hover {
+  background-color: #eee;
+  transform: scale(1.03);
 }
 
-.questions {
-  display: grid;
-  grid-gap: calc(var(--spacing) * 2);
+/* Þegar notandi velur svar */
+.selected {
+  background-color: #4a2ebd !important; /* Betri kontrast */
+  color: white;
+  font-weight: bold;
 }
 
-.question__form {
-  display: grid;
-  grid-gap: var(--spacing);
+/* Rétt og rangt svar */
+.correct {
+  background-color: #388e3c !important; /* Betri kontrast */
+  color: white;
+  font-weight: bold;
 }
 
-.question__form button {
-  max-inline-size: fit-content;
-  padding-inline: var(--spacing);
-  padding-block: calc(var(--spacing) / 2);
+.wrong {
+  background-color: #d32f2f !important; /* Betri kontrast */
+  color: white;
+  font-weight: bold;
 }
 
-.answer {
-  margin-inline: calc(var(--spacing) * -1);
-  padding-inline: var(--spacing);
-  padding-block: calc(var(--spacing) / 2);
+/* Felur hluti sem ekki eiga að sjást strax */
+.hide {
+  display: none;
 }
 
-.answer--correct {
-  background-color: var(--color-correct);
+/* Stjórntakkar */
+#controls {
+  margin-top: 30px;
 }
 
-.answer--incorrect {
-  background-color: var(--color-incorrect);
+#controls button {
+  padding: 12px 24px;
+  margin: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 500;
+  border-radius: 25px;
+  transition: all 0.3s ease-in-out;
+  color: white;
+}
+
+#controls button:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+#back-btn {
+  background-color: #f4a261;
+}
+
+#next-btn {
+  background-color: #4a2ebd; 
+  color: white;
+}
+
+#finish-btn {
+  background-color: #e76f51;
+}
+
+#restart-btn {
+  background-color: #4a2ebd;
+  color: white;
+}
+
+/* Yfirlit yfir svör eftir leik */
+.result-box {
+  border: 2px solid #4a2ebd;
+  padding: 10px;
+  margin: 10px auto;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 10px;
+  text-align: center;
+  font-size: 18px;
+  width: 60%;
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.result-box p {
+  font-weight: bold;
 }

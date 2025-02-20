@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spurningaleikurinn</title>
+    <link rel="stylesheet" href="public/styles.css">
+    <script defer src="public/main.js"></script>
+</head>
+<body>
+    <h1>Spurningaleikurinn!!!</h1>
+    <h3>Veldu flokk sem þú vilt svara spurningum um</h3>
+
+    <!-- Flokkaval -->
+    <div id="category-container">
+        <button class="category-btn" data-category="html">HTML</button>
+        <button class="category-btn" data-category="css">CSS</button>
+        <button class="category-btn" data-category="javascript">JavaScript</button>
+    </div>
+
+    <!-- Svæði fyrir spurningar -->
+    <div id="quiz-container">
+        <div id="question-container"></div>
+        <div id="answer-buttons"></div>
+        
+        <!-- Stjórntakkar -->
+        <div id="controls">
+            <button id="back-btn" class="hide">Til baka</button>
+            <button id="next-btn" class="hide">Næsta spurning</button>
+            <button id="finish-btn" class="hide">Ljúka spurningaleiknum</button>
+        </div>
+
+        <div id="result-container" class="hide"></div>
+        <button id="restart-btn" class="hide">Reyna aftur</button>
+    </div>
+
+    <!-- Form fyrir að bæta við nýrri spurningu -->
+    <div id="add-question-container">
+        <h2>Bæta við nýrri spurningu</h2>
+        <label for="question-category">Veldu flokk:</label>
+        <select id="question-category">
+            <option value="html">HTML</option>
+            <option value="css">CSS</option>
+            <option value="javascript">JavaScript</option>
+        </select>
+        <input id="new-question" type="text" placeholder="Skrifaðu spurningu">
+        <input id="correct-answer" type="text" placeholder="Rétt svar">
+        <input id="wrong-answer-1" type="text" placeholder="Rangt svar 1">
+        <input id="wrong-answer-2" type="text" placeholder="Rangt svar 2">
+        <input id="wrong-answer-3" type="text" placeholder="Rangt svar 3">
+        <button id="add-question-btn">Bæta við</button>
+    </div>
+    <button id="clear-questions-btn">Eyða spurningum sem hafa verið búnar til</button>
+
+    
+</body>
+</html>
+
