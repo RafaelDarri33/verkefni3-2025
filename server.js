@@ -197,3 +197,13 @@ app.delete('/questions', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`✅ Server keyrir á http://localhost:${PORT}`);
 });
+app.get('/api/spurningar', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM spurningar');
+        console.log('Gögn úr gagnagrunni:', result.rows);
+        res.json(result.rows);
+    } catch (error) {
+        console.error('⚠️ Villa við að sækja spurningar:', error);
+        res.status(500).json({ error: 'Gat ekki sótt spurningar' });
+    }
+});

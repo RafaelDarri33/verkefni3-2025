@@ -28,7 +28,7 @@ h1 {
   border-radius: 25px;
   font-size: 18px;
   font-weight: 500;
-  background-color: #5a3fc9; /* Betri kontrast */
+  background-color: #5a3fc9; 
   color: white;
   transition: all 0.3s ease-in-out;
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
