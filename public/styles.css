@@ -173,3 +173,7 @@ h1 {
 .result-box p {
   font-weight: bold;
 }
+.hide {
+  display: none;
+}
+

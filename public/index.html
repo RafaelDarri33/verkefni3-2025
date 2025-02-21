@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spurningaleikurinn</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script defer src="/auth.js"></script>
+    <script defer src="/quiz.html"></script>    
+</head>
+<body>
+    <div class="container">
+        <h1>Velkominn!</h1>
+        <p>Má bjóða þér að taka þátt í Vefforritunar Spurningaleik?</p>
+        
+        <div id="auth-container">
+            <h2>Innskráning</h2>
+            <input type="text" id="login-username" placeholder="Notandanafn">
+            <input type="password" id="login-password" placeholder="Lykilorð">
+            <button id="login-btn">Innskrá</button>
+            <p>Ekki með aðgang? <a href="#" id="show-register">Nýskráning</a></p>
+
+            <div id="register-container" class="hide">
+                <h2>Nýskráning</h2>
+                <input type="text" id="register-username" placeholder="Notandanafn">
+                <input type="password" id="register-password" placeholder="Lykilorð">
+                <button id="register-btn">Búa til aðgang</button>
+                <p>Áttu nú þegar aðgang? <a href="#" id="show-login">Innskrá</a></p>
+            </div>
+        </div>
+
+        <!-- 🔹 Spurningarleikurinn kemur aðeins fram eftir að notandi skráir sig inn -->
+        <div id="quiz-section" class="hide">
+            <h1>Spurningaleikurinn!!!</h1>
+        
+            <h3>Veldu flokk sem þú vilt svara spurningum um</h3>
+            <div id="category-container"></div>
+
+            <div id="quiz-container">
+                <div id="question-container"></div>
+                <div id="answer-buttons"></div>
+                
+                <div id="controls">
+                    <button id="back-btn" class="hide">Til baka</button>
+                    <button id="next-btn" class="hide">Næsta spurning</button>
+                    <button id="finish-btn" class="hide">Ljúka spurningaleiknum</button>
+                </div>
+
+                <div id="result-container" class="hide"></div>
+                <button id="restart-btn" class="hide">Reyna aftur</button>
+            </div>
+
+            <div id="add-question-container">
+                <h2>Bæta við nýrri spurningu</h2>
+                <label for="question-category">Veldu flokk:</label>
+                <select id="question-category"></select>
+                <input id="new-question" type="text" placeholder="Skrifaðu spurningu">
+                <input id="correct-answer" type="text" placeholder="Rétt svar">
+                <input id="wrong-answer-1" type="text" placeholder="Rangt svar 1">
+                <input id="wrong-answer-2" type="text" placeholder="Rangt svar 2">
+                <input id="wrong-answer-3" type="text" placeholder="Rangt svar 3">
+                <button id="add-question-btn">Bæta við</button>
+            </div>
+            <button id="clear-questions-btn">Eyða spurningum sem hafa verið búnar til</button>
+        </div>
+    </div>
+</body>
+</html>
