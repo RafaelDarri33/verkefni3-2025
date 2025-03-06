@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     const categoryContainer = <HTMLDivElement>document.getElementById("category-container");
     const questionContainer = <HTMLDivElement>document.getElementById("question-container");
     const answerButtons = <HTMLDivElement>document.getElementById("answer-buttons");
@@ -10,12 +10,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const finishButton = <HTMLButtonElement>document.getElementById("finish-btn");
 
     interface Answer {
-        answer: string;
+        text: string;
         correct: boolean;
     }
 
     interface Question {
-        question: string;
+        id: number;
+        text: string;
+        category: { name: string };
         answers: Answer[];
     }
 
@@ -23,24 +25,17 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentQuestionIndex: number = 0;
     let userAnswers: { selected: number | null, correct: boolean }[] = [];
 
-    categoryContainer.addEventListener("click", (event) => {
-        if ((event.target as HTMLElement).classList.contains("category-btn")) {
-            const file = (event.target as HTMLElement).dataset.file!;
-            fetchQuestions(file);
-        }
-    });
-
-    async function fetchQuestions(file: string) {
+    async function fetchQuestions() {
         try {
-            const response = await fetch(`/quiz/${file}`);
+            const response = await fetch("http://localhost:3000/questions");
             const data = await response.json();
 
-            if (!Array.isArray(data.questions) || data.questions.length === 0) {
+            if (!Array.isArray(data) || data.length === 0) {
                 alert("Engar spurningar fundust.");
                 return;
             }
 
-            currentQuestions = shuffleArray(data.questions);
+            currentQuestions = shuffleArray(data);
             userAnswers = new Array(currentQuestions.length).fill({ selected: null, correct: false });
             startQuiz();
         } catch (error) {
@@ -64,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const questionData = currentQuestions[currentQuestionIndex];
-        questionContainer.innerText = questionData.question;
+        questionContainer.innerText = questionData.text;
         answerButtons.innerHTML = "";
 
         const shuffledAnswers = shuffleArray(questionData.answers);
@@ -72,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
         shuffledAnswers.forEach((answer, index) => {
             const button = document.createElement("button");
             button.classList.add("btn");
-            button.innerText = answer.answer;
+            button.innerText = answer.text;
             button.dataset.correct = answer.correct.toString();
             button.onclick = () => selectAnswer(index, answer.correct);
             answerButtons.appendChild(button);
@@ -108,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         currentQuestions.forEach((question, i) => {
             const userAnswer = userAnswers[i];
-            const correctAnswer = question.answers.find(a => a.correct)?.answer;
+            const correctAnswer = question.answers.find(a => a.correct)?.text;
 
             let answerButtonsHtml = "";
             question.answers.forEach((answer, index) => {
@@ -120,12 +115,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     color = isCorrect ? "green" : "red";
                 }
 
-                answerButtonsHtml += `<span style="color: ${color};">${answer.answer}</span><br>`;
+                answerButtonsHtml += `<span style="color: ${color};">${answer.text}</span><br>`;
             });
 
             resultContainer.innerHTML += `
                 <p>
-                    <strong>${question.question}</strong><br>
+                    <strong>${question.text}</strong><br>
                     ${answerButtonsHtml}
                 </p>
             `;
@@ -176,4 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function shuffleArray<T>(array: T[]): T[] {
         return array.sort(() => Math.random() - 0.5);
     }
+
+    // Sækjum spurningar þegar síðan hleðst inn
+    fetchQuestions();
 });

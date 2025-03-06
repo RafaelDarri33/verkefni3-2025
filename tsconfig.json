@@ -11,6 +11,6 @@
     "types": ["node"],
     "rootDir": "./public"   
   },
-  "include": ["public/**/*.ts"],   
+  "include": ["public/**/*.ts", "quiz.ts"],   
   "exclude": ["node_modules"]
 }

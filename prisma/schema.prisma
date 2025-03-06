@@ -15,8 +15,17 @@ model Category {
 }
 
 model Question {
-  id          Int      @id @default(autoincrement())
-  text        String
-  categoryId  Int
-  category    Category @relation(fields: [categoryId], references: [id])
+  id         Int      @id @default(autoincrement())
+  text       String
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  answers    Answer[] // Bæta við þessu til að tengja spurningu við svör
+}
+
+model Answer {
+  id         Int     @id @default(autoincrement())
+  text       String
+  correct    Boolean
+  questionId Int
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }
