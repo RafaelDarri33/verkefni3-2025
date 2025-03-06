@@ -1,12 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const loginUsername = document.getElementById("login-username");
-    const loginPassword = document.getElementById("login-password");
-    const loginBtn = document.getElementById("login-btn");
+    const loginUsername = <HTMLInputElement>document.getElementById("login-username");
+    const loginPassword = <HTMLInputElement>document.getElementById("login-password");
+    const loginBtn = <HTMLButtonElement>document.getElementById("login-btn");
 
-    const registerUsername = document.getElementById("register-username");
-    const registerPassword = document.getElementById("register-password");
-    const registerBtn = document.getElementById("register-btn");
-    const showRegister = document.getElementById("show-register");
+    const registerUsername = <HTMLInputElement>document.getElementById("register-username");
+    const registerPassword = <HTMLInputElement>document.getElementById("register-password");
+    const registerBtn = <HTMLButtonElement>document.getElementById("register-btn");
+    const showRegister = <HTMLAnchorElement>document.getElementById("show-register");
 
     if (localStorage.getItem("loggedInUser")) {
         window.location.href = "quiz.html";
@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     showRegister.addEventListener("click", (e) => {
         e.preventDefault();
-        document.getElementById("register-container").classList.toggle("hide");
+        document.getElementById("register-container")?.classList.toggle("hide");
     });
 
     registerBtn.addEventListener("click", () => {

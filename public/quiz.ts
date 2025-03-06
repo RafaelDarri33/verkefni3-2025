@@ -1,26 +1,36 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const categoryContainer = document.getElementById("category-container");
-    const questionContainer = document.getElementById("question-container");
-    const answerButtons = document.getElementById("answer-buttons");
-    const resultContainer = document.getElementById("result-container");
-    const restartButton = document.getElementById("restart-btn");
-    const quizContainer = document.getElementById("quiz-container");
-    const nextButton = document.getElementById("next-btn");
-    const backButton = document.getElementById("back-btn");
-    const finishButton = document.getElementById("finish-btn");
+    const categoryContainer = <HTMLDivElement>document.getElementById("category-container");
+    const questionContainer = <HTMLDivElement>document.getElementById("question-container");
+    const answerButtons = <HTMLDivElement>document.getElementById("answer-buttons");
+    const resultContainer = <HTMLDivElement>document.getElementById("result-container");
+    const restartButton = <HTMLButtonElement>document.getElementById("restart-btn");
+    const quizContainer = <HTMLDivElement>document.getElementById("quiz-container");
+    const nextButton = <HTMLButtonElement>document.getElementById("next-btn");
+    const backButton = <HTMLButtonElement>document.getElementById("back-btn");
+    const finishButton = <HTMLButtonElement>document.getElementById("finish-btn");
 
-    let currentQuestions = [];
-    let currentQuestionIndex = 0;
-    let userAnswers = [];
+    interface Answer {
+        answer: string;
+        correct: boolean;
+    }
+
+    interface Question {
+        question: string;
+        answers: Answer[];
+    }
+
+    let currentQuestions: Question[] = [];
+    let currentQuestionIndex: number = 0;
+    let userAnswers: { selected: number | null, correct: boolean }[] = [];
 
     categoryContainer.addEventListener("click", (event) => {
-        if (event.target.classList.contains("category-btn")) {
-            const file = event.target.dataset.file;
+        if ((event.target as HTMLElement).classList.contains("category-btn")) {
+            const file = (event.target as HTMLElement).dataset.file!;
             fetchQuestions(file);
         }
     });
 
-    async function fetchQuestions(file) {
+    async function fetchQuestions(file: string) {
         try {
             const response = await fetch(`/quiz/${file}`);
             const data = await response.json();
@@ -31,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             currentQuestions = shuffleArray(data.questions);
-            userAnswers = new Array(currentQuestions.length).fill(null);
+            userAnswers = new Array(currentQuestions.length).fill({ selected: null, correct: false });
             startQuiz();
         } catch (error) {
             console.error("Villa við að sækja spurningar:", error);
@@ -63,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const button = document.createElement("button");
             button.classList.add("btn");
             button.innerText = answer.answer;
-            button.dataset.correct = answer.correct;
+            button.dataset.correct = answer.correct.toString();
             button.onclick = () => selectAnswer(index, answer.correct);
             answerButtons.appendChild(button);
         });
@@ -73,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateNavigationButtons();
     }
 
-    function selectAnswer(index, isCorrect) {
+    function selectAnswer(index: number, isCorrect: boolean) {
         userAnswers[currentQuestionIndex] = { selected: index, correct: isCorrect };
 
         document.querySelectorAll(".btn").forEach((btn, i) => {
@@ -98,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         currentQuestions.forEach((question, i) => {
             const userAnswer = userAnswers[i];
-            const correctAnswer = question.answers.find(a => a.correct).answer;
+            const correctAnswer = question.answers.find(a => a.correct)?.answer;
 
             let answerButtonsHtml = "";
             question.answers.forEach((answer, index) => {
@@ -125,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     nextButton.addEventListener("click", () => {
-        if (userAnswers[currentQuestionIndex] === null) {
+        if (userAnswers[currentQuestionIndex].selected === null) {
             alert("Þú verður að velja svar áður en þú heldur áfram!");
             return;
         }
@@ -163,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function shuffleArray(array) {
+    function shuffleArray<T>(array: T[]): T[] {
         return array.sort(() => Math.random() - 0.5);
     }
 });
