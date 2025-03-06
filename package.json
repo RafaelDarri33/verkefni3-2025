@@ -1,8 +1,8 @@
 {
-  "name": "vef2-2025-v1-synilausn",
+  "name": "Verkefni3",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
+  "type": "commonjs",
   "engines": {
     "node": ">=20"
   },
@@ -11,12 +11,12 @@
     "build:clean": "rimraf dist",
     "build:generate": "node src/generate.js",
     "build:copy-public": "cpy public dist --flat",
-    "dev": "browser-sync start --serveStatic ./dist --server --files ./dist/*.* ./dist/*.*",
+    "dev": "tsx server.ts",
     "lint": "eslint src",
     "test": "node --test --experimental-test-module-mocks",
     "test:watch": "node --test --watch --experimental-test-module-mocks",
     "test:coverage": "node --test --experimental-test-coverage --experimental-test-module-mocks",
-    "start": "node server.js"
+    "start": "node dist/server.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
@@ -30,6 +30,8 @@
     "typescript": "^5.8.2"
   },
   "dependencies": {
+    "@hono/node-server": "^1.13.8",
+    "@prisma/client": "^6.4.1",
     "bcrypt": "^5.1.1",
     "cpy-cli": "^5.0.0",
     "dotenv": "^16.4.7",
@@ -37,6 +39,8 @@
     "express-session": "^1.18.1",
     "npm-run-all": "^4.1.5",
     "pg": "^8.13.3",
-    "rimraf": "^6.0.1"
+    "rimraf": "^6.0.1",
+    "tsx": "^4.19.3",
+    "zod": "^3.24.2"
   }
 }

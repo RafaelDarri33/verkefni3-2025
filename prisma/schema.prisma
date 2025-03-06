@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  name  String
+  slug  String @unique
+  questions Question[]
+}
+
+model Question {
+  id          Int      @id @default(autoincrement())
+  text        String
+  categoryId  Int
+  category    Category @relation(fields: [categoryId], references: [id])
+}
