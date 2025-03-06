@@ -11,7 +11,12 @@
     <h1>Spurningarleikurinn</h1>
     <button id="logout-btn">Útskrá</button>
 
-    <div id="category-container"></div>
+    <div id="category-container">
+        <button class="category-btn" data-file="html.json">HTML</button>
+        <button class="category-btn" data-file="css.json">CSS</button>
+        <button class="category-btn" data-file="js.json">JavaScript</button>
+    </div>
+    
 
     <div id="quiz-container" class="hide">
         <div id="question-container"></div>
@@ -24,6 +29,14 @@
         <div id="result-container" class="hide"></div>
         <button id="restart-btn" class="hide">Reyna aftur</button>
     </div>
+
+    <div id="controls">
+        <button id="back-btn" class="hide">Til baka</button>
+        <button id="next-btn" class="hide">Næsta spurning</button>
+        <button id="finish-btn" class="hide">Ljúka spurningaleiknum</button>
+    </div>
+    <button id="restart-btn" class="hide">Reyna aftur</button>
+    
 
     <div id="add-question-container">
         <h2>Bæta við nýrri spurningu</h2>

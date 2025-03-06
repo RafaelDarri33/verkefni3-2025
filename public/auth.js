@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const registerBtn = document.getElementById("register-btn");
     const showRegister = document.getElementById("show-register");
 
-    // Athugar hvort notandi er skráður inn
     if (localStorage.getItem("loggedInUser")) {
         window.location.href = "quiz.html";
     }
@@ -48,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const storedPassword = localStorage.getItem(username);
         if (storedPassword === password) {
             localStorage.setItem("loggedInUser", username);
-            window.location.href = "quiz.html"; // Færa notanda á quiz.html
+            window.location.href = "quiz.html"; 
         } else {
             alert("Rangt notandanafn eða lykilorð!");
         }

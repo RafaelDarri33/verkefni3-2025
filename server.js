@@ -3,17 +3,28 @@ import express from 'express';
 import session from 'express-session';
 import bcrypt from 'bcrypt';
 import pool from './db.js';
-import path from "path";
-import { fileURLToPath } from "url";
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Skilgreina __dirname rétt í ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Middleware fyrir JSON og formgögn
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Þjónusta static skrár
+app.use(express.static(path.join(__dirname, "public")));
+app.use('/quiz', express.static(path.join(__dirname, 'data')));
+
+// Session stillingar
 app.use(session({
     secret: process.env.SESSION_SECRET || 'lykilord', 
     resave: false,
@@ -21,10 +32,7 @@ app.use(session({
     cookie: { secure: false } 
 }));
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-app.use(express.static(path.join(__dirname, "public")));
-
+// Búa til notenda töflu ef hún er ekki til
 (async () => {
     try {
         await pool.query(`
@@ -34,12 +42,13 @@ app.use(express.static(path.join(__dirname, "public")));
                 password TEXT NOT NULL
             )
         `);
-        console.log("Notenda tafla búin til!");
+        console.log("✅ Notenda tafla búin til!");
     } catch (error) {
-        console.error("Villa við að búa til töflu:", error);
+        console.error("❌ Villa við að búa til töflu:", error);
     }
 })();
 
+// Root route
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
 });
@@ -47,75 +56,44 @@ app.get("/quiz.html", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "quiz.html"));
 });
 
-
-app.post('/register', async (req, res) => {
-    const { username, password } = req.body;
-
-    if (!username || !password) {
-        return res.status(400).json({ error: "Vinsamlegast fylltu út öll svæði" });
-    }
-
-    try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const result = await pool.query(
-            'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id, username',
-            [username, hashedPassword]
-        );
-
-        req.session.user = { id: result.rows[0].id, username: result.rows[0].username };
-        res.json({ message: "Notandi búinn til!" });
-    } catch (error) {
-        console.error("Villa við nýskráningu:", error);
-        res.status(500).json({ error: "Gat ekki búið til notanda" });
-    }
-});
-
-app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
-
-    if (!username || !password) {
-        return res.status(400).json({ error: "Vinsamlegast fylltu út öll svæði" });
-    }
-
-    try {
-        const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
-
-        if (result.rowCount === 0) {
-            return res.status(401).json({ error: "Rangt notandanafn eða lykilorð" });
-        }
-
-        const user = result.rows[0];
-        const passwordMatch = await bcrypt.compare(password, user.password);
-
-        if (!passwordMatch) {
-            return res.status(401).json({ error: "Rangt notandanafn eða lykilorð" });
-        }
-
-        req.session.user = { id: user.id, username: user.username };
-        res.json({ message: "Innskráning tókst!" });
-    } catch (error) {
-        console.error("Villa við innskráningu:", error);
-        res.status(500).json({ error: "Gat ekki skráð inn notanda" });
-    }
-});
-
-app.post('/logout', (req, res) => {
-    req.session.destroy((err) => {
+// API fyrir index.json (skilar lista yfir spurningaskrár)
+app.get('/quiz/index', (req, res) => {
+    fs.readFile('./data/index.json', 'utf8', (err, data) => {
         if (err) {
-            return res.status(500).json({ error: "Gat ekki skráð út" });
+            console.error('❌ Villa við að lesa index.json:', err);
+            return res.status(500).json({ error: 'Gat ekki sótt index.json' });
         }
-        res.json({ message: "Útskráning tókst!" });
+        try {
+            const quizFiles = JSON.parse(data);
+            res.json(quizFiles);
+        } catch (parseError) {
+            console.error('❌illa við að parse-a index.json:', parseError);
+            res.status(500).json({ error: 'Ógild JSON skrá' });
+        }
     });
 });
 
-app.get('/auth/check', (req, res) => {
-    if (req.session.user) {
-        res.json({ loggedIn: true, user: req.session.user });
-    } else {
-        res.json({ loggedIn: false });
-    }
+// API fyrir að sækja JSON skrár úr `data/`
+app.get('/quiz/:filename', (req, res) => {
+    const filename = req.params.filename;
+    const filePath = path.join(__dirname, 'data', filename);
+
+    fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+            console.error(`Villa við að lesa ${filename}:`, err);
+            return res.status(500).json({ error: `Gat ekki sótt ${filename}` });
+        }
+        try {
+            const questions = JSON.parse(data);
+            res.json(questions);
+        } catch (parseError) {
+            console.error(`Villa við að parse-a ${filename}:`, parseError);
+            res.status(500).json({ error: 'Ógild JSON gögn' });
+        }
+    });
 });
 
+// API fyrir categories úr gagnagrunni
 app.get('/categories', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM categories');
@@ -126,6 +104,7 @@ app.get('/categories', async (req, res) => {
     }
 });
 
+// API fyrir spurningar eftir flokk (ef þær eru í gagnagrunni)
 app.get('/questions/:category_id', async (req, res) => {
     const { category_id } = req.params;
 
@@ -152,58 +131,7 @@ app.get('/questions/:category_id', async (req, res) => {
     }
 });
 
-
-
-app.post('/questions', async (req, res) => {
-    const { category_id, question, answers } = req.body;
-
-    if (!category_id || !question || !answers || answers.length < 2) {
-        return res.status(400).json({ error: "Ógild gögn, vinsamlegast fylltu út öll svæði" });
-    }
-
-    try {
-        const result = await pool.query(
-            'INSERT INTO questions (category_id, question) VALUES ($1, $2) RETURNING id',
-            [category_id, question]
-        );
-
-        const questionId = result.rows[0].id;
-
-        for (let answer of answers) {
-            await pool.query(
-                'INSERT INTO answers (question_id, answer, correct) VALUES ($1, $2, $3)',
-                [questionId, answer.answer, answer.correct]
-            );
-        }
-
-        res.status(201).json({ message: "Spurning bætt við!" });
-    } catch (error) {
-        console.error('Villa við að bæta við spurningu:', error);
-        res.status(500).json({ error: 'Gat ekki vistað spurningu' });
-    }
-});
-
-app.delete('/questions', async (req, res) => {
-    try {
-        await pool.query('DELETE FROM answers');
-        await pool.query('DELETE FROM questions');
-        res.json({ message: "Öllum spurningum eytt!" });
-    } catch (error) {
-        console.error('Villa við að eyða spurningum:', error);
-        res.status(500).json({ error: 'Gat ekki eytt spurningum' });
-    }
-});
-
+// Keyra serverinn
 app.listen(PORT, () => {
-    console.log(`✅ Server keyrir á http://localhost:${PORT}`);
-});
-app.get('/api/spurningar', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM spurningar');
-        console.log('Gögn úr gagnagrunni:', result.rows);
-        res.json(result.rows);
-    } catch (error) {
-        console.error('⚠️ Villa við að sækja spurningar:', error);
-        res.status(500).json({ error: 'Gat ekki sótt spurningar' });
-    }
+    console.log(`Server keyrir á http://localhost:${PORT}`);
 });

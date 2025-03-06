@@ -94,25 +94,25 @@ h1 {
 
 /* Þegar notandi velur svar */
 .selected {
-  background-color: #4a2ebd !important; /* Betri kontrast */
+  background-color: #4a2ebd !important; 
   color: white;
   font-weight: bold;
 }
 
 /* Rétt og rangt svar */
 .correct {
-  background-color: #388e3c !important; /* Betri kontrast */
+  background-color: #388e3c !important; 
   color: white;
   font-weight: bold;
 }
 
 .wrong {
-  background-color: #d32f2f !important; /* Betri kontrast */
+  background-color: #d32f2f !important; 
   color: white;
   font-weight: bold;
 }
 
-/* Felur hluti sem ekki eiga að sjást strax */
+
 .hide {
   display: none;
 }
